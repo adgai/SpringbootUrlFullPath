@@ -6,6 +6,8 @@ import com.intellij.codeInsight.codeVision.ui.model.ClickableTextCodeVisionEntry
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ide.CopyPasteManager
+import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiAnnotation
 import com.intellij.psi.PsiMethod
@@ -26,38 +28,62 @@ class GetMappingUrlProvider : CodeVisionProvider<Unit> {
     override val relativeOrderings: List<CodeVisionRelativeOrdering>
         get() = newMutableList()
 
-    override fun computeCodeVision(editor: Editor, data: Unit): CodeVisionState {
-
-        var entries: List<Pair<TextRange, CodeVisionEntry>>? = null;
-
-        ApplicationManager.getApplication().runReadAction {
-            // 现在这行代码在读取操作的上下文中安全执行
-            val psiFile = PsiUtil.getPsiFile(editor.project!!, editor.virtualFile)
-
-            // 在这里继续处理 psiFile
-            // 例如，执行对 psiFile 的读取操作和分析
+//    override fun computeCodeVision(editor: Editor, data: Unit): CodeVisionState {
+//
+//        var entries: List<Pair<TextRange, CodeVisionEntry>>? = null;
+//
+//        ApplicationManager.getApplication().runReadAction {
+//            // 现在这行代码在读取操作的上下文中安全执行
 //            val psiFile = PsiUtil.getPsiFile(editor.project!!, editor.virtualFile)
+//
+//            // 在这里继续处理 psiFile
+//            // 例如，执行对 psiFile 的读取操作和分析
+////            val psiFile = PsiUtil.getPsiFile(editor.project!!, editor.virtualFile)
+//            val methods = PsiTreeUtil.findChildrenOfType(psiFile, PsiMethod::class.java)
+//            val classAnnotation = PsiTreeUtil.findChildrenOfType(psiFile, PsiAnnotation::class.java)
+//
+//
+//            val requestMapping =
+//                classAnnotation.find { it.qualifiedName == "org.springframework.web.bind.annotation.RequestMapping" }
+//            if (requestMapping == null) {
+//                entries = newArrayList()
+//            } else {
+//                val computeUrl = requestMapping?.computeUrl() ?: ""
+//                entries = methods.asSequence()
+//                    .mapNotNull { it.getGetMappingUrl(computeUrl) }
+//                    .toList()
+//            }
+//
+//        }
+//
+//
+//
+//        return CodeVisionState.Ready(entries!!)
+//    }
+//
+
+    override fun computeCodeVision(editor: Editor, data: Unit): CodeVisionState {
+        val project = editor.project ?: return CodeVisionState.Ready(emptyList())
+        var entries = emptyList<Pair<TextRange, CodeVisionEntry>>()
+
+        // 使用 DumbService 等待索引就绪
+        DumbService.getInstance(project).runReadActionInSmartMode {
+            val psiFile = PsiUtil.getPsiFile(project, editor.virtualFile)
             val methods = PsiTreeUtil.findChildrenOfType(psiFile, PsiMethod::class.java)
             val classAnnotation = PsiTreeUtil.findChildrenOfType(psiFile, PsiAnnotation::class.java)
 
-
             val requestMapping =
                 classAnnotation.find { it.qualifiedName == "org.springframework.web.bind.annotation.RequestMapping" }
-            if (requestMapping == null) {
-                entries = newArrayList()
-            } else {
-                val computeUrl = requestMapping?.computeUrl() ?: ""
-                entries = methods.asSequence()
-                    .mapNotNull { it.getGetMappingUrl(computeUrl) }
-                    .toList()
-            }
+            val computeUrl = requestMapping?.computeUrl() ?: ""
 
+            entries = methods.asSequence()
+                .mapNotNull { it.getGetMappingUrl(computeUrl) }
+                .toList()
         }
 
-
-
-        return CodeVisionState.Ready(entries!!)
+        return CodeVisionState.Ready(entries)
     }
+
 
     private fun PsiMethod.getGetMappingUrl(computeUrl: String): Pair<TextRange, CodeVisionEntry>? {
         val getMapping = annotations.find {
@@ -150,3 +176,6 @@ class GetMappingUrlProvider : CodeVisionProvider<Unit> {
 //private fun load(path: String, cacheKey: Int, flags: Int): Icon {
 //    return IconManager.getInstance().loadRasterizedIcon(path, AllIcons::class.java.classLoader, cacheKey, flags)
 //}
+fun runWhenIndexReady(project: Project, runnable: Runnable) {
+    DumbService.getInstance(project).runWhenSmart(runnable)
+}
