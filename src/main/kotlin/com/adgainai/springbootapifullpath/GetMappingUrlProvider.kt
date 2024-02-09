@@ -1,7 +1,5 @@
-package com.example.plugin
+package com.adgainai.springbootapifullpath
 
-import com.example.myinlayhints.InlayHintsIcons
-import com.google.common.collect.Lists
 import com.google.common.collect.Lists.newArrayList
 import com.intellij.codeInsight.codeVision.*
 import com.intellij.codeInsight.codeVision.ui.model.ClickableTextCodeVisionEntry
@@ -16,8 +14,6 @@ import com.intellij.psi.util.PsiUtil
 import com.squareup.wire.internal.newMutableList
 import java.awt.datatransfer.StringSelection
 import java.awt.event.MouseEvent
-import java.util.Arrays
-import javax.swing.JOptionPane
 
 class GetMappingUrlProvider : CodeVisionProvider<Unit> {
     override val defaultAnchor: CodeVisionAnchorKind

@@ -1,4 +1,4 @@
-package com.example.myinlayhints
+package com.adgainai.springbootapifullpath
 
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State

@@ -6,7 +6,7 @@
  * https://opensource.org/licenses/MIT.
  */
 
-package com.example.myinlayhints
+package com.adgainai.springbootapifullpath
 
 import com.intellij.ui.IconManager
 import com.intellij.ui.RoundedIcon

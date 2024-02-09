@@ -1,4 +1,4 @@
-package com.example.myinlayhints
+package com.adgainai.springbootapifullpath
 
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
@@ -6,7 +6,6 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBTextField
 import com.intellij.util.ui.FormBuilder
 import javax.swing.JComponent
-import javax.swing.JPanel
 
 class MyPluginConfigurable(private val project: Project) : Configurable {
     private val settings = MyPluginProjectSettings.getInstance(project)

@@ -4,7 +4,7 @@ plugins {
     id("org.jetbrains.intellij") version "1.16.1"
 }
 
-group = "com.adgainai"
+group = "com.example"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -14,10 +14,9 @@ repositories {
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    version.set("2023.1.5")
-    type.set("IC") // Target IDE Platform
-
-    plugins.set(listOf(/* Plugin Dependencies */))
+    version.set("2023.3.2")
+    type.set("IU") // Target IDE Platform
+    plugins.set(listOf("com.intellij.java","java"))
 }
 
 tasks {
@@ -44,4 +43,7 @@ tasks {
     publishPlugin {
         token.set(System.getenv("PUBLISH_TOKEN"))
     }
+}
+dependencies{
+    implementation("com.ctrip.framework.apollo:apollo-openapi:2.2.0")
 }
