@@ -1,4 +1,4 @@
-package com.adgainai.springbootapifullpath
+package com.adgainai.springbooturlfullpath
 
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project

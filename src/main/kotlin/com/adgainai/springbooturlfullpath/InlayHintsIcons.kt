@@ -6,7 +6,7 @@
  * https://opensource.org/licenses/MIT.
  */
 
-package com.adgainai.springbootapifullpath
+package com.adgainai.springbooturlfullpath
 
 import com.intellij.ui.IconManager
 import com.intellij.ui.RoundedIcon

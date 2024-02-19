@@ -1,4 +1,4 @@
-package com.adgainai.springbootapifullpath
+package com.adgainai.springbooturlfullpath
 
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State

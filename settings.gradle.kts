@@ -5,4 +5,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "SpringbootUrlPIFullPath"
+rootProject.name = "SpringbootUrlFullPath"

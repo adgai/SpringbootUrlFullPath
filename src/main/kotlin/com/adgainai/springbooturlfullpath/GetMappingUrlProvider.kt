@@ -1,9 +1,7 @@
-package com.adgainai.springbootapifullpath
+package com.adgainai.springbooturlfullpath
 
-import com.google.common.collect.Lists.newArrayList
 import com.intellij.codeInsight.codeVision.*
 import com.intellij.codeInsight.codeVision.ui.model.ClickableTextCodeVisionEntry
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.DumbService

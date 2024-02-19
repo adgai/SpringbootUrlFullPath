@@ -1,11 +1,11 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
-    <id>com.adgainai.springbootapifullpath</id>
+    <id>com.adgainai.springbooturlfullpath</id>
 
     <!-- Public plugin name should be written in Title Case.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
-    <name>SpringbootUrlPIFullPath</name>
+    <name>SpringbootUrlFullPath</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
     <vendor email="aoionecode@gmail.com" url="https://woshi.im/">adgainai</vendor>
@@ -26,6 +26,6 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        <codeInsight.codeVisionProvider implementation="com.adgainai.springbootapifullpath.GetMappingUrlProvider"/>
+        <codeInsight.codeVisionProvider implementation="com.adgainai.springbooturlfullpath.GetMappingUrlProvider"/>
        </extensions>
 </idea-plugin>
