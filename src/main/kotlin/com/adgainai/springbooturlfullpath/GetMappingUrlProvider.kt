@@ -12,6 +12,8 @@ import com.intellij.psi.PsiMethod
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiUtil
 import com.squareup.wire.internal.newMutableList
+import org.apache.commons.lang3.StringUtils
+import org.apache.tools.ant.util.StreamUtils
 import java.awt.datatransfer.StringSelection
 import java.awt.event.MouseEvent
 
@@ -87,6 +89,7 @@ class GetMappingUrlProvider : CodeVisionProvider<Unit> {
         val getMapping = annotations.find {
             it.qualifiedName == "org.springframework.web.bind.annotation.GetMapping"
                     || it.qualifiedName == "org.springframework.web.bind.annotation.PostMapping"
+                    || it.qualifiedName == "org.springframework.web.bind.annotation.RequestMapping"
         }
             ?: return null
 
@@ -96,13 +99,6 @@ class GetMappingUrlProvider : CodeVisionProvider<Unit> {
         val text = computeUrl.replace("\"", "") + url.replace("\"", "")
 
         val clickHandler: (MouseEvent?, Editor) -> Unit = { event, editor ->
-            // 处理点击事件
-            // 例如：显示一个对话框
-            if (event != null) {
-
-//                JOptionPane.showMessageDialog(null, text)
-            }
-            println("--------------------------")
 
             val copyPasteManager = CopyPasteManager.getInstance()
             val stringSelection = StringSelection(text)
@@ -118,39 +114,20 @@ class GetMappingUrlProvider : CodeVisionProvider<Unit> {
         )
 
         return Pair(textRange, codeVisionEntry)
-//        return codeVisionEntry
 
-//        return CodeVisionEntry.TextOnly(url, id)
     }
-
-//    public fun CodeVisionEntry.TextOnly(url: String, id: String): CodeVisionEntry {
-//        val clickHandler: (MouseEvent?, Editor) -> Unit = { event, editor ->
-//            // 处理点击事件
-//            // 例如：显示一个对话框
-//            if (event != null) {
-//
-//                JOptionPane.showMessageDialog(null, url)
-//            }
-//            println("--------------------------")
-//
-//            val copyPasteManager = CopyPasteManager.getInstance()
-//            val stringSelection = StringSelection(url)
-//            copyPasteManager.setContents(stringSelection)
-//        }
-//        val codeVisionEntry = ClickableTextCodeVisionEntry(
-//                text = url,
-//                providerId = id,
-//                onClick = clickHandler,  // 点击处理器
-//                icon =Web, // 可以设置图标，如果需要的话
-//                tooltip = "Click here for more information", // 鼠标悬停时的描述
-//        )
-//        return codeVisionEntry
-//    }
 
     private fun PsiAnnotation.computeUrl(): String {
         // 这里的逻辑应该解析GetMapping的参数以及类级别的RequestMapping等
         // 简化为直接返回注解的值
-        return findAttributeValue("value")?.text ?: ""
+        val path = findAttributeValue("path")?.text
+        val value = findAttributeValue("value")?.text
+        if (StringUtils.isBlank(value) || value  == "{}"){
+            return path.toString();
+        }else{
+            return value.toString()
+        }
+
     }
 
     override fun isAvailableFor(project: com.intellij.openapi.project.Project): Boolean {
@@ -162,18 +139,9 @@ class GetMappingUrlProvider : CodeVisionProvider<Unit> {
 //        TODO("Not yet implemented")
     }
 
-//    override fun precomputeOnUiThread(editor: Editor) {
-//        TODO("Not yet implemented")
-//    }
-
-    // 其他必要的实现 ...
 }
 
-//val Web = load("/icon/web.svg", -130155959, 2)
-//
-//private fun load(path: String, cacheKey: Int, flags: Int): Icon {
-//    return IconManager.getInstance().loadRasterizedIcon(path, AllIcons::class.java.classLoader, cacheKey, flags)
-//}
+
 fun runWhenIndexReady(project: Project, runnable: Runnable) {
     DumbService.getInstance(project).runWhenSmart(runnable)
 }
