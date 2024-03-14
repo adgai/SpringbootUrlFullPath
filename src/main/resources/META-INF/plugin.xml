@@ -27,5 +27,14 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
         <codeInsight.codeVisionProvider implementation="com.adgainai.springbooturlfullpath.GetMappingUrlProvider"/>
-       </extensions>
+
+
+        <projectConfigurable
+                id="ApolloConfigVisualizationSetting"
+                groupId="tools"
+                instance="com.adgainai.springbooturlfullpath.MyPluginConfigurable"
+                displayName="SpringbootFullPath Setting"/>
+        <projectService serviceImplementation="com.adgainai.springbooturlfullpath.MyPluginProjectSettings"/>
+
+    </extensions>
 </idea-plugin>

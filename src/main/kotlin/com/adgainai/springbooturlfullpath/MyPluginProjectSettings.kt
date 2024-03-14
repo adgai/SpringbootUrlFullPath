@@ -11,10 +11,8 @@ import com.intellij.util.xmlb.XmlSerializerUtil
     storages = [Storage("MyPluginSettings.xml")]
 )
 class MyPluginProjectSettings : PersistentStateComponent<MyPluginProjectSettings> {
-    var token: String = ""
-    var url: String = ""
-    var serviceName: String = ""
-    var methodSignature: String = ""
+    var prefix: String = ""
+
 
     companion object {
         fun getInstance(project: Project): MyPluginProjectSettings {

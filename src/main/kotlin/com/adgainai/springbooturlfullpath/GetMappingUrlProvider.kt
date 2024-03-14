@@ -13,7 +13,6 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiUtil
 import com.squareup.wire.internal.newMutableList
 import org.apache.commons.lang3.StringUtils
-import org.apache.tools.ant.util.StreamUtils
 import java.awt.datatransfer.StringSelection
 import java.awt.event.MouseEvent
 
@@ -65,7 +64,7 @@ class GetMappingUrlProvider : CodeVisionProvider<Unit> {
     override fun computeCodeVision(editor: Editor, data: Unit): CodeVisionState {
         val project = editor.project ?: return CodeVisionState.Ready(emptyList())
         var entries = emptyList<Pair<TextRange, CodeVisionEntry>>()
-
+        val settings = MyPluginProjectSettings.getInstance(project)
         // 使用 DumbService 等待索引就绪
         DumbService.getInstance(project).runReadActionInSmartMode {
             val psiFile = PsiUtil.getPsiFile(project, editor.virtualFile)
@@ -75,17 +74,20 @@ class GetMappingUrlProvider : CodeVisionProvider<Unit> {
             val requestMapping =
                 classAnnotation.find { it.qualifiedName == "org.springframework.web.bind.annotation.RequestMapping" }
             val computeUrl = requestMapping?.computeUrl() ?: ""
-
+            var prefix = settings.prefix
             entries = methods.asSequence()
-                .mapNotNull { it.getGetMappingUrl(computeUrl) }
+                .mapNotNull { it.getGetMappingUrl(computeUrl, prefix) }
                 .toList()
+
+
         }
+
 
         return CodeVisionState.Ready(entries)
     }
 
 
-    private fun PsiMethod.getGetMappingUrl(computeUrl: String): Pair<TextRange, CodeVisionEntry>? {
+    private fun PsiMethod.getGetMappingUrl(computeUrl: String, prefix: String): Pair<TextRange, CodeVisionEntry>? {
         val getMapping = annotations.find {
             it.qualifiedName == "org.springframework.web.bind.annotation.GetMapping"
                     || it.qualifiedName == "org.springframework.web.bind.annotation.PostMapping"
@@ -96,14 +98,11 @@ class GetMappingUrlProvider : CodeVisionProvider<Unit> {
         val textRange = getMapping.textRange
         val url = getMapping.computeUrl() ?: return null
 
-        val text = computeUrl.replace("\"", "") + url.replace("\"", "")
+        var text = computeUrl.replace("\"", "") + url.replace("\"", "")
 
-        val clickHandler: (MouseEvent?, Editor) -> Unit = { event, editor ->
+        text = if (StringUtils.isBlank(prefix)) text else prefix + text
 
-            val copyPasteManager = CopyPasteManager.getInstance()
-            val stringSelection = StringSelection(text)
-            copyPasteManager.setContents(stringSelection)
-        }
+        val clickHandler: (MouseEvent?, Editor) -> Unit = getClickHandler(text)
 
         val codeVisionEntry = ClickableTextCodeVisionEntry(
             text = text,
@@ -117,14 +116,24 @@ class GetMappingUrlProvider : CodeVisionProvider<Unit> {
 
     }
 
+    private fun getClickHandler(text: String): (MouseEvent?, Editor) -> Unit {
+        val clickHandler: (MouseEvent?, Editor) -> Unit = { event, editor ->
+
+            val copyPasteManager = CopyPasteManager.getInstance()
+            val stringSelection = StringSelection(text)
+            copyPasteManager.setContents(stringSelection)
+        }
+        return clickHandler
+    }
+
     private fun PsiAnnotation.computeUrl(): String {
         // 这里的逻辑应该解析GetMapping的参数以及类级别的RequestMapping等
         // 简化为直接返回注解的值
         val path = findAttributeValue("path")?.text
         val value = findAttributeValue("value")?.text
-        if (StringUtils.isBlank(value) || value  == "{}"){
+        if (StringUtils.isBlank(value) || value == "{}") {
             return path.toString();
-        }else{
+        } else {
             return value.toString()
         }
 
