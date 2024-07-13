@@ -8,17 +8,19 @@ import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiAnnotation
+import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiUtil
 import com.squareup.wire.internal.newMutableList
+import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang3.StringUtils
 import java.awt.datatransfer.StringSelection
 import java.awt.event.MouseEvent
 
 class GetMappingUrlProvider : CodeVisionProvider<Unit> {
     override val defaultAnchor: CodeVisionAnchorKind
-        get() = TODO("Not yet implemented")
+        get() = CodeVisionAnchorKind.Top
     override val id: String
         get() = "GetMappingUrlProvider"
 
@@ -26,40 +28,6 @@ class GetMappingUrlProvider : CodeVisionProvider<Unit> {
         get() = "GetMapping URL"
     override val relativeOrderings: List<CodeVisionRelativeOrdering>
         get() = newMutableList()
-
-//    override fun computeCodeVision(editor: Editor, data: Unit): CodeVisionState {
-//
-//        var entries: List<Pair<TextRange, CodeVisionEntry>>? = null;
-//
-//        ApplicationManager.getApplication().runReadAction {
-//            // 现在这行代码在读取操作的上下文中安全执行
-//            val psiFile = PsiUtil.getPsiFile(editor.project!!, editor.virtualFile)
-//
-//            // 在这里继续处理 psiFile
-//            // 例如，执行对 psiFile 的读取操作和分析
-////            val psiFile = PsiUtil.getPsiFile(editor.project!!, editor.virtualFile)
-//            val methods = PsiTreeUtil.findChildrenOfType(psiFile, PsiMethod::class.java)
-//            val classAnnotation = PsiTreeUtil.findChildrenOfType(psiFile, PsiAnnotation::class.java)
-//
-//
-//            val requestMapping =
-//                classAnnotation.find { it.qualifiedName == "org.springframework.web.bind.annotation.RequestMapping" }
-//            if (requestMapping == null) {
-//                entries = newArrayList()
-//            } else {
-//                val computeUrl = requestMapping?.computeUrl() ?: ""
-//                entries = methods.asSequence()
-//                    .mapNotNull { it.getGetMappingUrl(computeUrl) }
-//                    .toList()
-//            }
-//
-//        }
-//
-//
-//
-//        return CodeVisionState.Ready(entries!!)
-//    }
-//
 
     override fun computeCodeVision(editor: Editor, data: Unit): CodeVisionState {
         val project = editor.project ?: return CodeVisionState.Ready(emptyList())
@@ -69,16 +37,22 @@ class GetMappingUrlProvider : CodeVisionProvider<Unit> {
         DumbService.getInstance(project).runReadActionInSmartMode {
             val psiFile = PsiUtil.getPsiFile(project, editor.virtualFile)
             val methods = PsiTreeUtil.findChildrenOfType(psiFile, PsiMethod::class.java)
-            val classAnnotation = PsiTreeUtil.findChildrenOfType(psiFile, PsiAnnotation::class.java)
+            val psiclasss = PsiTreeUtil.findChildrenOfType(psiFile, PsiClass::class.java)
+            if (CollectionUtils.isNotEmpty(psiclasss)){
+                val firstPsiClass = psiclasss.first()
+                val classAnnotation = firstPsiClass.annotations
 
-            val requestMapping =
-                classAnnotation.find { it.qualifiedName == "org.springframework.web.bind.annotation.RequestMapping" }
-            val computeUrl = requestMapping?.computeUrl() ?: ""
-            var prefix = settings.prefix
-            entries = methods.asSequence()
-                .mapNotNull { it.getGetMappingUrl(computeUrl, prefix) }
-                .toList()
+                val requestMapping =
+                    classAnnotation.find { it.qualifiedName == "org.springframework.web.bind.annotation.RequestMapping" }
 
+                val classUrlPart = requestMapping?.computeUrl() ?: ""
+
+                val prefix = settings.prefix
+
+                entries = methods.asSequence()
+                    .mapNotNull { it.getGetMappingUrl(classUrlPart,prefix) }
+                    .toList()
+            }
 
         }
 

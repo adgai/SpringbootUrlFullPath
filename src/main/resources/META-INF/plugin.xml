@@ -37,4 +37,14 @@
         <projectService serviceImplementation="com.adgainai.springbooturlfullpath.MyPluginProjectSettings"/>
 
     </extensions>
+    <change-notes>
+        <![CDATA[
+  <h2>1.0.3</h2>
+  <ul>
+    <li>support get url part from @RequestMapping annotation</li>
+    <li>support get url part from both 'path' and 'value' of  @*Mapping annotation</li>
+    <li>support custom a prefix for full path url ,you can custom it in Setting ->Tools ->  SpringbootFullPath Setting</li>
+  </ul>
+]]>
+    </change-notes>
 </idea-plugin>
