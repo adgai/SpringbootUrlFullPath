@@ -10,10 +10,8 @@ import javax.swing.JComponent
 class MyPluginConfigurable(private val project: Project) : Configurable {
     private val settings = MyPluginProjectSettings.getInstance(project)
     private val prefixField = JBTextField(settings.prefix).apply {
-        emptyText.text = "请输入 prefix, 如果多个用英文逗号拼接。方法上将会展示原始url，拼接前缀的url"
+        emptyText.text = "请输入 prefix, 方法上将会展示拼接前缀的url"
     }
-
-
 
     override fun getDisplayName(): String = "My Plugin Configuration"
 

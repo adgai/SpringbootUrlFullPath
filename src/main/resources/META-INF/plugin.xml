@@ -8,7 +8,7 @@
     <name>SpringbootUrlFullPath</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor email="aoionecode@gmail.com" url="https://woshi.im/">adgainai</vendor>
+    <vendor email="aoionecoder@gmail.com" url="https://codeman.im/">codeman</vendor>
 
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
@@ -22,11 +22,14 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.java</depends>
+    <depends>org.jetbrains.kotlin</depends>
 
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+
     <extensions defaultExtensionNs="com.intellij">
-        <codeInsight.codeVisionProvider implementation="com.adgainai.springbooturlfullpath.GetMappingUrlProvider"/>
+        <codeInsight.codeVisionProvider implementation="com.adgainai.springbooturlfullpath.JavaMappingUrlProvider"/>
+        <codeInsight.codeVisionProvider implementation="com.adgainai.springbooturlfullpath.KotlinMappingUrlProvider"/>
 
 
         <projectConfigurable
@@ -38,6 +41,15 @@
 
     </extensions>
     <change-notes>
+
+        <![CDATA[
+  <h2>2.0.0</h2>
+  <ul>
+    <li>support more url type</li>
+    <li>add method select action</li>
+  </ul>
+]]>
+
         <![CDATA[
   <h2>1.0.3</h2>
   <ul>
@@ -47,4 +59,36 @@
   </ul>
 ]]>
     </change-notes>
+
+    <actions>
+
+        <action
+                id="GetMethodBodyContentAtCaretAction"
+                class="com.adgainai.springbooturlfullpath.selectaction.GetMethodBodyContentAtCaretAction"
+                text="Get Method Body Content at Caret"
+                description="获取光标所在方法的body 的content 不包含大括号"
+        >
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+
+        <action
+                id="GetMethodBodyAtCaretAction"
+                class="com.adgainai.springbooturlfullpath.selectaction.GetMethodBodyAtCaretAction"
+                text="Get Method Body at Caret"
+                description="获取光标所在方法的body"
+        >
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+
+        <action
+                id="GetMethodAtCaretAction"
+                class="com.adgainai.springbooturlfullpath.selectaction.GetMethodAtCaretAction"
+                text="Get Method at Caret"
+                description="获取光标所在方法"
+        >
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+
+
+    </actions>
 </idea-plugin>
