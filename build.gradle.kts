@@ -1,3 +1,5 @@
+import org.gradle.internal.classpath.Instrumented.systemProperty
+
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.9.21"
@@ -5,7 +7,7 @@ plugins {
 }
 
 group = "com.adgainai"
-version = "1.0.4"
+version = "2.0.0"
 
 repositories {
     mavenCentral()
@@ -15,8 +17,11 @@ repositories {
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
     version.set("2023.3.2")
+//    systemProperty("idea.platform.prefix", "macOS-aarch64")
     type.set("IU") // Target IDE Platform
-    plugins.set(listOf("com.intellij.java","java"))
+    plugins.set(listOf("com.intellij.java", "java", "Kotlin"))
+
+    updateSinceUntilBuild.set(false)
 }
 
 tasks {
@@ -31,7 +36,7 @@ tasks {
 
     patchPluginXml {
         sinceBuild.set("233")
-        untilBuild.set("241.*")
+//        untilBuild.set("242.*")
     }
 
     signPlugin {
