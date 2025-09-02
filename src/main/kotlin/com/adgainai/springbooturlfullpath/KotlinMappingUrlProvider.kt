@@ -8,8 +8,11 @@ import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.util.PsiUtil
+import org.jetbrains.kotlin.analysis.api.analyze
+import org.jetbrains.kotlin.analysis.api.annotations.KaAnnotation
+import org.jetbrains.kotlin.analysis.api.symbols.KaCallableSymbol
+import org.jetbrains.kotlin.idea.base.analysis.api.utils.getSymbolContainingMemberDeclarations
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
-import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import java.awt.datatransfer.StringSelection
@@ -35,41 +38,82 @@ class KotlinMappingUrlProvider : CodeVisionProvider<Unit> {
 
         // 使用 DumbService 等待索引就绪
         DumbService.getInstance(project).runReadActionInSmartMode {
+
             val psiFile = PsiUtil.getPsiFile(project, editor.virtualFile)
 
             if (psiFile.language.id == "kotlin") {
                 // 处理 Kotlin 文件
                 val ktFile = psiFile as KtFile
 
-                ktFile.declarations.forEach { declaration ->
-                    if (declaration is KtClass) {
-                        val ktClass = declaration
-                        val requestMapping = ktClass.annotationEntries.find {
-                            it.shortName?.asString() == "RequestMapping"
-                        }
+                analyze(ktFile) {
+                    ktFile.declarations.forEach { declaration ->
 
-                        val classUrlPart = getAnnUrl(requestMapping)
+                        val classSymbol = declaration.symbol
 
-                        // 获取类的主体 (class body)
-                        val classBody = ktClass.getBody()
+                        val requestMapping =
+                            classSymbol.annotations.find { it ->
+                                it.classId?.relativeClassName?.asString()?.contains("RequestMapping") ?: false
+                            }
+
+                        val classUrlPart = getAnnUrlForKt(requestMapping)
 
                         val prefix = settings.prefix
 
                         // 获取类中的所有函数
-                        val functions = classBody?.functions
-                        entries = functions?.asSequence()
-                            ?.mapNotNull { it.getGetMappingUrl(classUrlPart, prefix) }
-                            ?.toList() ?: emptyList()
+                        entries =
+                            classSymbol.getSymbolContainingMemberDeclarations()?.memberScope?.callables?.asSequence()
+                                ?.mapNotNull { it.getGetMappingUrl(classUrlPart, prefix) }
+                                ?.toList() ?: emptyList()
 
                     }
                 }
-
             }
 
         }
 
 
         return CodeVisionState.Ready(entries)
+    }
+
+    private fun KaCallableSymbol.getGetMappingUrl(
+        computeUrl: List<String>,
+        prefix: String
+    ): Pair<TextRange, CodeVisionEntry>? {
+        val supportedMappings = setOf("GetMapping", "PostMapping", "RequestMapping")
+
+        val getMapping = annotations.find {
+            supportedMappings.contains(
+                it.classId?.relativeClassName?.asString()
+            )
+        } ?: return null
+
+        val textRange = getMapping.psi?.textRange ?: return  null// 确保使用的是 com.intellij.openapi.util.TextRange
+
+        val newTextRange: com.intellij.openapi.util.TextRange = com.intellij.openapi.util.TextRange(
+            textRange.startOffset,
+            textRange.endOffset
+        )
+
+        val url = getAnnUrlForKt(getMapping)
+
+
+        val fullPathList = PathUtils.buildFullPaths(computeUrl, url, prefix)
+
+        val text = fullPathList.joinToString("---")
+        val textC = fullPathList.joinToString("\n")
+
+        val clickHandler: (MouseEvent?, Editor) -> Unit = getClickHandler(textC)
+
+        val secondCodeVision = ClickableTextCodeVisionEntry(
+            text = text,
+            providerId = id, // 唯一ID
+            onClick = clickHandler,  // 点击处理器
+            icon = InlayHintsIcons.web, // 可以设置图标，如果需要的话
+            tooltip = "Click here for more information", // 鼠标悬停时的描述
+        )
+
+        return Pair(newTextRange, secondCodeVision)
+
     }
 
     private fun KtNamedFunction.getGetMappingUrl(
@@ -123,6 +167,18 @@ class KotlinMappingUrlProvider : CodeVisionProvider<Unit> {
         return PathUtils.doGetMappingUrls(texts)                   // 去重
     }
 
+    private fun getAnnUrlForKt(getMapping: KaAnnotation?): List<String> {
+        val arguments = getMapping?.arguments ?: return emptyList()
+
+        // 先拿到所有 text
+        val texts: List<String> = arguments.mapNotNull { arg ->
+            arg.expression.sourcePsi?.text
+        }
+
+        // 再统一处理
+        return PathUtils.doGetMappingUrls(texts)                   // 去重
+    }
+
 
     private fun getClickHandler(text: String): (MouseEvent?, Editor) -> Unit {
         val clickHandler: (MouseEvent?, Editor) -> Unit = { event, editor ->
@@ -144,8 +200,8 @@ class KotlinMappingUrlProvider : CodeVisionProvider<Unit> {
 //        TODO("Not yet implemented")
     }
 
-}
 
+}
 
 
 

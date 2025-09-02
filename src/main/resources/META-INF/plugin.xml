@@ -40,11 +40,17 @@
         <projectService serviceImplementation="com.adgainai.springbooturlfullpath.MyPluginProjectSettings"/>
 
     </extensions>
+
+    <extensions defaultExtensionNs="org.jetbrains.kotlin">
+        <supportsKotlinPluginMode supportsK1="false" supportsK2="true"/>
+    </extensions>
+
     <change-notes>
 
         <![CDATA[
   <h2>2.0.0</h2>
   <ul>
+    <li>support kotlin K2</li>
     <li>support more url type</li>
     <li>add method select action</li>
   </ul>
