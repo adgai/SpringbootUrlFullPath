@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.adgainai"
-version = "2.0.0"
+version = "1.0.12"
 
 repositories {
     mavenCentral()
@@ -36,7 +36,7 @@ tasks {
 
     patchPluginXml {
         sinceBuild.set("233")
-//        untilBuild.set("242.*")
+        untilBuild.set("243.*")
     }
 
     signPlugin {
