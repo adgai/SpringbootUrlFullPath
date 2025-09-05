@@ -87,7 +87,7 @@ class KotlinMappingUrlProvider : CodeVisionProvider<Unit> {
             )
         } ?: return null
 
-        val textRange = getMapping.psi?.textRange ?: return  null// 确保使用的是 com.intellij.openapi.util.TextRange
+        val textRange = getMapping.psi?.textRange ?: return null// 确保使用的是 com.intellij.openapi.util.TextRange
 
         val newTextRange: com.intellij.openapi.util.TextRange = com.intellij.openapi.util.TextRange(
             textRange.startOffset,

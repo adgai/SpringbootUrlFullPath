@@ -16,7 +16,8 @@ repositories {
 
 dependencies {
     intellijPlatform {
-        create("IC", "2025.1")
+        intellijIdeaUltimate("2025.2")
+//        create("IU", "2025.1")
 
          bundledPlugin("com.intellij.java")
          bundledPlugin("org.jetbrains.kotlin")
@@ -26,7 +27,7 @@ dependencies {
 intellijPlatform {
     pluginConfiguration {
         ideaVersion {
-            sinceBuild = "251"
+            sinceBuild = "252"
         }
 
         changeNotes = """
