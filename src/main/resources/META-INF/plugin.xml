@@ -33,11 +33,21 @@
 
 
         <projectConfigurable
-                id="ApolloConfigVisualizationSetting"
+                id="SpringbootFullPathProjectConfig"
                 groupId="tools"
                 instance="com.adgainai.springbooturlfullpath.MyPluginConfigurable"
-                displayName="SpringbootFullPath Setting"/>
+                displayName="SpringbootFullPath project Setting"/>
         <projectService serviceImplementation="com.adgainai.springbooturlfullpath.MyPluginProjectSettings"/>
+
+        <applicationConfigurable
+        id = "SpringbootFullPathGlobalConfig"
+        groupId="tools"
+        instance="com.adgainai.springbooturlfullpath.pluginconfig.SfConfigurable"
+        displayName="SpringbootFullPath global Setting">
+
+        </applicationConfigurable>
+
+        <editorFactoryListener implementation="com.adgainai.springbooturlfullpath.gutter.BraceScopeEditorListener"/>
 
     </extensions>
 
@@ -67,6 +77,51 @@
     </change-notes>
 
     <actions>
+
+
+        <action id="resizeAll"
+                class="com.adgainai.springbooturlfullpath.resizewindow.ResizeWindowAction"
+                text="resizeAll"
+                description="resizeAll">
+            <add-to-group group-id="ViewMenu" anchor="last"/>
+        </action>
+
+        <action id="ResizeLeftWindowC"
+                class="com.adgainai.springbooturlfullpath.resizewindow.ResizeWindowAction$Left"
+                text="resizeLeft"
+                description="resizeLeft"
+        >
+            <keyboard-shortcut keymap="$default" first-keystroke="alt H"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+
+
+
+        <action id="ResizeRightWindowC"
+                class="com.adgainai.springbooturlfullpath.resizewindow.ResizeWindowAction$Right"
+                text="resizeRight"
+                description="resizeRight">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+
+
+
+        <action id="ResizeUpWindowC"
+                class="com.adgainai.springbooturlfullpath.resizewindow.ResizeWindowAction$Up"
+                text="resizeUp"
+                description="resizeUp">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+
+
+
+        <action id="ResizeDownWindowC"
+                class="com.adgainai.springbooturlfullpath.resizewindow.ResizeWindowAction$Down"
+                text="resizeDown"
+                description="resizeDown">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+
 
         <action
                 id="GetMethodBodyContentAtCaretAction"

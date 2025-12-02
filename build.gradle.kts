@@ -34,6 +34,7 @@ intellijPlatform {
             Initial version
         """.trimIndent()
     }
+    instrumentCode.set(false)
 }
 tasks {
     // Set the JVM compatibility versions
