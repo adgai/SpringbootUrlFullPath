@@ -17,7 +17,7 @@ import javax.swing.Icon
 
 public object InlayHintsIcons {
 	public val web: Icon = load("/META-INF/icon/web.svg")
-
+    public val curl: Icon = load("/META-INF/icon/curl.svg")
 	private fun load(path: String): Icon {
 		return IconManager.getInstance().getIcon(path, InlayHintsIcons::class.java.classLoader)
 	}

@@ -49,6 +49,13 @@
 
         <editorFactoryListener implementation="com.adgainai.springbooturlfullpath.gutter.BraceScopeEditorListener"/>
 
+        <codeInsight.lineMarkerProvider
+                language="JAVA"
+                implementationClass="com.adgainai.springbooturlfullpath.gutter.curl.CurlGutterProvider"/>
+        <codeInsight.lineMarkerProvider
+                language="kotlin"
+                implementationClass="com.adgainai.springbooturlfullpath.gutter.curl.CurlGutterProvider"/>
+
     </extensions>
 
     <extensions defaultExtensionNs="org.jetbrains.kotlin">

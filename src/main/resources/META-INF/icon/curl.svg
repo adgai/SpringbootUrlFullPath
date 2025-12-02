@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="16" height="16" viewBox="0 0 16 16" fill="none">
+
+    <!-- 橙色轮廓圆 -->
+    <circle cx="8" cy="8" r="7"
+            fill="none"
+            stroke="#62B543"
+            stroke-width="1"/>
+
+    <!-- 橙色箭头 (填充风格) -->
+    <path d="M5 8l3 3 3-3M8 11V5"
+          stroke="#62B543"
+          stroke-width="4"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+</svg>
