@@ -56,6 +56,11 @@
                 language="kotlin"
                 implementationClass="com.adgainai.springbooturlfullpath.gutter.curl.CurlGutterProvider"/>
 
+        <applicationConfigurable
+                displayName="Curl Annotation Mapping"
+                id="curl.annotation.mapping"
+                groupId="tools"
+                instance="com.adgainai.springbooturlfullpath.settings.CurlAnnotationMappingConfigurable"/>
     </extensions>
 
     <extensions defaultExtensionNs="org.jetbrains.kotlin">
