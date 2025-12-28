@@ -15,6 +15,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 @Service(Service.Level.APP)
 class SfPluginProjectSettings : PersistentStateComponent<SfPluginProjectSettings> {
     var gutterHighlightCurrentBlock: Boolean = false
+    var autoFile: Boolean = false
 
     companion object {
         val instance: SfPluginProjectSettings

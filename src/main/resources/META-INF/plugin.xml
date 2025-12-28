@@ -40,10 +40,10 @@
         <projectService serviceImplementation="com.adgainai.springbooturlfullpath.MyPluginProjectSettings"/>
 
         <applicationConfigurable
-        id = "SpringbootFullPathGlobalConfig"
-        groupId="tools"
-        instance="com.adgainai.springbooturlfullpath.pluginconfig.SfConfigurable"
-        displayName="SpringbootFullPath global Setting">
+                id="SpringbootFullPathGlobalConfig"
+                groupId="tools"
+                instance="com.adgainai.springbooturlfullpath.pluginconfig.SfConfigurable"
+                displayName="SpringbootFullPath global Setting">
 
         </applicationConfigurable>
 
@@ -61,6 +61,14 @@
                 id="curl.annotation.mapping"
                 groupId="tools"
                 instance="com.adgainai.springbooturlfullpath.settings.CurlAnnotationMappingConfigurable"/>
+
+
+        <postStartupActivity
+                implementation="com.adgainai.springbooturlfullpath.autofile.AutoOpenDefaultFileActivity"/>
+        <fileEditorProvider
+                implementation="com.adgainai.springbooturlfullpath.autofile.DefaultWelcomeFileEditorProvider"/>
+
+
     </extensions>
 
     <extensions defaultExtensionNs="org.jetbrains.kotlin">
@@ -108,7 +116,6 @@
         </action>
 
 
-
         <action id="ResizeRightWindowC"
                 class="com.adgainai.springbooturlfullpath.resizewindow.ResizeWindowAction$Right"
                 text="resizeRight"
@@ -117,14 +124,12 @@
         </action>
 
 
-
         <action id="ResizeUpWindowC"
                 class="com.adgainai.springbooturlfullpath.resizewindow.ResizeWindowAction$Up"
                 text="resizeUp"
                 description="resizeUp">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
         </action>
-
 
 
         <action id="ResizeDownWindowC"
