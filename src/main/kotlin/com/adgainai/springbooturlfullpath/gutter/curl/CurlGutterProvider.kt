@@ -60,9 +60,12 @@ class CurlGutterProvider : LineMarkerProvider {
     ) : GutterIconNavigationHandler<PsiElement> {
 
         override fun navigate(e: MouseEvent?, elt: PsiElement?) {
+
+            val port = elt?.let { SpringBootPortResolver.resolve(it.project) }
+
             val text = CurlGenerator.generate(
                 project = p,
-                baseUrl = "http://localhost:8080",
+                baseUrl = "http://localhost:$port",
                 mapping = mapping,
                 params = params
             )

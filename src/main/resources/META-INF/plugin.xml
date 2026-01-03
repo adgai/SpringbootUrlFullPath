@@ -76,6 +76,14 @@
     </extensions>
 
     <change-notes>
+        <![CDATA[
+  <h2>2.0.1</h2>
+  <ul>
+    <li>support open reade.md, when non file open</li>
+  </ul>
+]]>
+
+
 
         <![CDATA[
   <h2>2.0.0</h2>
