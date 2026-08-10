@@ -12,7 +12,6 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiUtil
-import org.apache.commons.collections.CollectionUtils
 import java.awt.datatransfer.StringSelection
 import java.awt.event.MouseEvent
 import java.util.*
@@ -30,14 +29,15 @@ class JavaMappingUrlProvider : CodeVisionProvider<Unit> {
 
     override fun computeCodeVision(editor: Editor, data: Unit): CodeVisionState {
         val project = editor.project ?: return CodeVisionState.Ready(emptyList())
+        val virtualFile = editor.virtualFile ?: return CodeVisionState.Ready(emptyList())
         var entries = emptyList<Pair<TextRange, CodeVisionEntry>>()
         val settings = MyPluginProjectSettings.getInstance(project)
         // 使用 DumbService 等待索引就绪
         DumbService.getInstance(project).runReadActionInSmartMode {
-            val psiFile = PsiUtil.getPsiFile(project, editor.virtualFile)
+            val psiFile = PsiUtil.getPsiFile(project, virtualFile)
             val methods = PsiTreeUtil.findChildrenOfType(psiFile, PsiMethod::class.java)
             val psiclasss = PsiTreeUtil.findChildrenOfType(psiFile, PsiClass::class.java)
-            if (CollectionUtils.isNotEmpty(psiclasss)) {
+            if (psiclasss.isNotEmpty()) {
                 val firstPsiClass = psiclasss.first()
                 val classAnnotation = firstPsiClass.annotations
 

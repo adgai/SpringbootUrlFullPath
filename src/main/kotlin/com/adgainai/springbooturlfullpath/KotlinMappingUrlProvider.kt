@@ -33,13 +33,14 @@ class KotlinMappingUrlProvider : CodeVisionProvider<Unit> {
     override fun computeCodeVision(editor: Editor, data: Unit): CodeVisionState {
 
         val project = editor.project ?: return CodeVisionState.Ready(emptyList())
+        val virtualFile = editor.virtualFile ?: return CodeVisionState.Ready(emptyList())
         var entries = emptyList<Pair<TextRange, CodeVisionEntry>>()
         val settings = MyPluginProjectSettings.getInstance(project)
 
         // 使用 DumbService 等待索引就绪
         DumbService.getInstance(project).runReadActionInSmartMode {
 
-            val psiFile = PsiUtil.getPsiFile(project, editor.virtualFile)
+            val psiFile = PsiUtil.getPsiFile(project, virtualFile)
 
             if (psiFile.language.id == "kotlin") {
                 // 处理 Kotlin 文件
@@ -168,15 +169,7 @@ class KotlinMappingUrlProvider : CodeVisionProvider<Unit> {
     }
 
     private fun getAnnUrlForKt(getMapping: KaAnnotation?): List<String> {
-        val arguments = getMapping?.arguments ?: return emptyList()
-
-        // 先拿到所有 text
-        val texts: List<String> = arguments.mapNotNull { arg ->
-            arg.expression.sourcePsi?.text
-        }
-
-        // 再统一处理
-        return PathUtils.doGetMappingUrls(texts)                   // 去重
+        return getAnnUrl(getMapping?.psi as? KtAnnotationEntry)
     }
 
 
@@ -202,6 +195,4 @@ class KotlinMappingUrlProvider : CodeVisionProvider<Unit> {
 
 
 }
-
-
 
