@@ -20,6 +20,14 @@ class PathUtils {
             if (classPaths.isEmpty()) {
                 return methodPaths.map { it.cleanPath() }.toCollection(ArrayList())
             }
+            if (methodPaths.isEmpty()) {
+                return classPaths.map { classPath ->
+                    buildString {
+                        if (prefix.isNotBlank()) append(prefix)
+                        append(classPath.cleanPath())
+                    }
+                }
+            }
             return buildList {
                 classPaths.forEach { classPath ->
                     methodPaths.forEach { methodPath ->
