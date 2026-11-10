@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.adgainai"
-version = "3.0.0"
+version = "3.0.1"
 
 repositories {
     mavenCentral()
@@ -27,8 +27,8 @@ dependencies {
 intellijPlatform {
     pluginConfiguration {
         ideaVersion {
+            // 不设置 untilBuild：263+ 的 IDE 需要移除 until-build 上界才能向前兼容
             sinceBuild = "262"
-            untilBuild = "262.*"
         }
 
         changeNotes = """
